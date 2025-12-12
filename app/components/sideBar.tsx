@@ -29,13 +29,13 @@ export default function SideBar(props: any){
     <div className={props.className}>
     <div className='{styles.container}'>
         <button className='{styles.myButton}' style={{backgroundColor: active === "high"? "rgba(34, 30, 30, 0.2)": ''}} onClick={highPriority}>
-          <PriorityHighIcon style={{color: "white"}}/>
+          <PriorityHighIcon style={{color: "blue"}}/>
         </button>        
         <button className='{styles.myButton}' style={{backgroundColor: active === "low"? "rgba(34, 30, 30, 0.2)": ''}} onClick={lowPriority}>
-          <LowPriorityIcon style={{color: "white"}}/>
+          <LowPriorityIcon style={{color: "blue"}}/>
         </button>
         <button className='{styles.myButton}' style={{backgroundColor: active === "date"? "rgba(34, 30, 30, 0.2)": ''}} onClick={dueDate}>
-          <PendingActionsIcon style={{color: "white"}} />
+          <PendingActionsIcon style={{color: "blue"}} />
         </button>
     </div>
     </div>

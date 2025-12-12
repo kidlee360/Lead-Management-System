@@ -38,7 +38,6 @@ function Card(props: any) {
         client_name: "",
         deal_description: "",
         deal_value: "",
-        owner_name: props.userName,
         last_activity_at: "",
         lead_source: "",
         time_in_stage: "",
@@ -51,7 +50,6 @@ function Card(props: any) {
             client_name: "",
             deal_description: "",
             deal_value: "",
-            owner_name: props.userName,
             last_activity_at: "",
             lead_source: "",
             time_in_stage: "",
@@ -77,7 +75,6 @@ function Card(props: any) {
     return (
             <div ref={cardRef} className='{styles.cardParent}' style={{height: isExpanded? "300px": '' }}>
                 <div className='{styles.card}'>
-                    <h3>{card.owner_name}</h3>
                     <input className='{styles.input}'
                       type="text"
                       name="client_name"
@@ -128,7 +125,7 @@ function Card(props: any) {
 
                     <div className='{`${styles.icons}`}'>
                           <button className='{clsx(styles.add)}' style={{display: isExpanded? '': "none"}} onClick={submitForm}>
-                              <AddIcon style={{ color: 'white' }} />
+                              <AddIcon style={{ color: 'blue' }} />
                           </button>
                     </div>    
                 </div>

@@ -13,13 +13,15 @@ import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth'; // <-- Import the hook
 
 export default function App() {
-interface Task {
+interface Lead {
         id: number;
-        task: string;
-        description: string;
-        due_date: Date;
-        columnname: string;
-        priority: string;
+        client_name: string;
+        deal_description: string;
+        deal_value: string;
+        last_activity_at: Date;
+        lead_source: string;
+        column_entry_time: Date;
+        columnName: string;
     }
 
     // Remove React.useMemo and call the hooks directly at the top level of the component
@@ -36,34 +38,50 @@ interface Task {
     
     const sensors = useSensors(pointerSensor, keyboardSensor);
 
-    const [tasks, setTasks] = useState<Task[]>([]);
+    const [leads, setLeads] = useState<Lead[]>([]);
     const [refetchToggle, setRefetchToggle] = useState(false);
-    const [activeTask, setActiveTask] = useState<Task | null>(null);
-    const [editingTaskId, setEditingTaskId] = useState(null);
+    const [activeLead, setActiveLead] = useState<Lead  | null>(null);
+        //const [activeLead, setActiveLead] = useState<
+      //  Omit<Lead, 'columnName'> & { column_name: string } | null
+    //>(null);
+    const [editingLeadId, setEditingLeadId] = useState(null);
     const [barClicked, setBarClicked] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const { isAuthenticated, isLoading, logout } = useAuth();
+    const { isAuthenticated, isLoading, logout, role } = useAuth();
     const router = useRouter();
 
     //--GET ROUTE--//
-    const fetchTasks = async() => {      
+    const fetchLeads = async() => {      
         try {
             const response = await axios.get('/api/leads');
-            setTasks(response.data);
+            setLeads(response.data);
         } catch (err: any) {
-            setError("Failed to fetch tasks. Please check if the API is running and your token is valid.");
+            setError("Failed to fetch leads. Please check if the API is running and your token is valid.");
             console.error("Dashboard data fetch error:", err.response ? err.response.data : err.message);
         }  finally {
         setLoading(false);
       }
     };
 
+//----------------------------------------------------------
+    // This effect will run whenever the 'leads' state changes.
+    useEffect(() => {
+        // Now, this will log the updated state after the re-render.
+                    console.log("Fetched leads:", leads[2]);// Log the first lead for verification
+    }, [leads]);
+    //-----------------------------------------------------------
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
             // User is NOT logged in, redirect them immediately
             router.push('/auth/signup');
+            return;
+        }
+    if (!isLoading && role === 'admin') {
+            // User is an admin, redirect to admin dashboard
+            router.push('/api/users/admin/dashboard');
+            return;
         }
     // IMPORTANT: In a production app, the token should be managed securely
     // (e.g., stored in HTTP-only cookies, or local storage with careful consideration).
@@ -92,8 +110,8 @@ interface Task {
       return;
     }
 
-    fetchTasks();
-  }, [isAuthenticated, isLoading, router]); // Empty dependency array means this runs once after initial render
+    fetchLeads();
+  }, [isAuthenticated, isLoading, role, router]); // Empty dependency array means this runs once after initial render
 
   
   if (loading) return <div style={{ textAlign: 'center', padding: '50px' }}>Loading Analytics Dashboard...</div>;
@@ -106,12 +124,12 @@ interface Task {
 
 //--POST ROUTE--//
     //the task with the type: "any" is coming from the Card component when the form is submitted where it was changed from props.onAdd(card);
-    const addTask = async (task: any) => {
-        const columnname = task.columnName || 'To Do'; // Default column for new tasks
-        const addTaskData = [ task.task, task.description, task.due_date, columnname, task.priority ];
+    const addLead = async (leads: any) => {
+        const columnname = leads.columnName || 'In Progress'; // Default column for new tasks
+        const addLeadData = { client_name: leads.client_name, deal_description: leads.deal_description, deal_value: leads.deal_value, columnName: columnname, owner_name: leads.owner_name, last_activity_at: leads.last_activity_at, lead_source: leads.lead_source, time_in_stage: leads.time_in_stage, id: leads.id };
         try {
-            const response = await axios.post('/api/tasks', addTaskData);
-            setTasks([...tasks, response.data]);
+            const response = await axios.post('/api/leads', addLeadData);
+            setLeads((prevLeads) => [...prevLeads, response.data]);
         } catch (error) {
             console.error('Error adding task:', error);
         }
@@ -120,108 +138,110 @@ interface Task {
     
     // This function will be called when the user clicks the "Edit" button
     const handleStartEditing = (dCard: any) => { //the dCard is sent over from the displayCard. it can be named anyhting eg task. Just decided to name it dCard for easier understanding
-      setEditingTaskId(dCard.id); //whatever you name it above influences it eg task above would be = task.id
+      setEditingLeadId(dCard.id); //whatever you name it above influences it eg task above would be = task.id
     };
     
     // This function will be called to exit edit mode (e.g., on cancel or save)
     const handleStopEditing = () => {
-      setEditingTaskId(null);
+      setEditingLeadId(null);
     };
 
 //--EDIT ROUTE--// 
     // You'll also need a function to handle the actual save logic
     const handleSaveChanges = async (eCard: any) => { // you can name it anything like props, hello etc. Just decided to leave it as eCard for easier understanding
         // ... logic to update the task in your main 'tasks' array
-        const updateTaskData = { //   MAKE SURE THE FUNCTION USES {} AND NOT [] IF NOT IT WOULDNT WORK AND YOU WOULDNT EVEN KNOW WHY
-            task: eCard.task, 
-            description: eCard.description, 
-            due_date: eCard.due_date, 
-            columnname: eCard.columnName || 'To Do', // The columnname you are using in the query
-            priority: eCard.priority, 
-            id: eCard.id // CRUCIAL for the WHERE clause
+        const updateLeadData = { //   MAKE SURE THE FUNCTION USES {} AND NOT [] IF NOT IT WOULDNT WORK AND YOU WOULDNT EVEN KNOW WHY
+            client_name: eCard.client_name, 
+            deal_description: eCard.deal_description, 
+            deal_value: eCard.deal_value, 
+            column_name: eCard.columnName || 'In Progress', // The columnname you are using in the query
+            id: eCard.id, // CRUCIAL for the WHERE clause
+            last_activity_at: eCard.last_activity_at,
+            lead_source: eCard.lead_source
         };
         try{
-            console.log(updateTaskData);
-            await axios.put('/api/tasks', updateTaskData);
-            fetchTasks();
+            console.log(updateLeadData);
+            await axios.put('/api/leads', updateLeadData);
+            fetchLeads();
         } catch (error) {
-            console.error('Error updating task:', error);
+            console.error('Error updating lead:', error);
         }
           
         handleStopEditing(); // Exit edit mode after saving
     };
 
 //--DELETE ROUTE--//
-    const deleteTask = async (taskId: number) => {
+    const deleteLead = async (leadId: number) => {
         try {
             // 1. Send the DELETE request
             // Axios sends the object { id: taskId } in the request body
-            await axios.delete('/api/tasks', { data: { id: taskId } }); 
+            await axios.delete('/api/leads', { data: { id: leadId } }); 
             
             // Note on Axios: For DELETE requests, the body must be passed via the 'data' property
             
             // 2. Update the state by removing the task (optimistic update)
             // Alternatively, you could call await fetchTasks(); again (safe, but slower)
-            setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+            setLeads(prevLeads => prevLeads.filter(lead => lead.id !== leadId));
     
         } catch (error) {
-            console.error('Error deleting task:', error);
+            console.error('Error deleting lead:', error);
             // Add logic here to re-fetch if the delete failed, or show an error message
         } 
     };
 
 //--LOGIC FOR MOVING TASKS--//
-    const moveTask = async (taskId: number, newColumn: 'To Do' | 'In Progress' | 'Done') => {
-        const taskToMove = tasks.find(t => t.id === taskId);
-        if (!taskToMove || taskToMove.columnname === newColumn) return; 
+    const moveLead = async (leadId: number, newColumn: 'In Progress' | 'Closed Won' | 'Closed Lost') => {
+        const leadToMove = leads.find(l => l.id === leadId);
+        if (!leadToMove || leadToMove.columnName === newColumn) return; 
         // 1. Optimistic UI Update: Change columnname in local state immediately
-        const updatedTask = { ...taskToMove, columnname: newColumn };
+        const updatedLead = { ...leadToMove, columnName: newColumn };
         
-        setTasks(prevTasks =>
-            prevTasks.map(task =>
-                task.id === taskId ? updatedTask : task
+        setLeads(prevLeads =>
+            prevLeads.map(lead =>
+                lead.id === leadId ? updatedLead : lead
             )
         ); 
         // 2. API Call to update the database
         try {
-            const payload = { id: taskId, columnname: newColumn };
-            console.log('Attempting to move task with payload:', payload);
+            const payload = { id: leadId, columnName: newColumn };
+            console.log('Attempting to move lead with payload:', payload);
 
-            await axios.patch('/api/tasks', payload);
+            await axios.patch('/api/leads', payload);
 
-            console.log('Task move successful for task ID:', taskId);
+            console.log('Lead move successful for lead ID:', leadId);
+            fetchLeads();
         } catch (error: any) {
-            console.error(`Error moving task ${taskId} to ${newColumn}:`, error);
+            console.error(`Error moving lead ${leadId} to ${newColumn}:`, error);
             // 3. Revert: If the API call fails, revert the UI state by fetching the correct data
             alert(`Failed to save card position. The card will be moved back.\n\nError: ${error.message}\n\nCheck the browser's developer console (F12) for more details.`);
-            fetchTasks();
+            fetchLeads();
         }
     };    
     
     const columnProps = {
-      tasks,
-      addTask,
+      leads,
+      addLead,
       handleSaveChanges,
-      editingTaskId,
-      setEditingTaskId,
-      deleteTask
+      editingLeadId,
+      setEditingLeadId,
+      deleteLead
     }
 
     const findContainer = (id: string | number) => {
-        if (['To Do', 'In Progress', 'Done'].includes(id.toString())) {
+        if (['In Progress', 'Closed Won', 'Closed Lost'].includes(id.toString())) {
             return id.toString();
         }
-        const task = tasks.find(t => t.id === id);
-        return task?.columnname;
+        const lead = leads.find(l => l.id === id);
+        return lead?.columnName;
     };
 
     sensors
 
     const handleDragStart = (event: DragStartEvent) => {
         const { active } = event;
-        const task = tasks.find(t => t.id === active.id);
-        if (task) {
-            setActiveTask(task);
+        const lead = leads.find(l => l.id === active.id);
+        if (lead) {
+            setActiveLead(lead);
         }
     };
 
@@ -237,15 +257,15 @@ const handleDragOver = (event: DragOverEvent) => {
     if (!over) return;
 
     const isOverAColumn = ['To Do', 'In Progress', 'Done'].includes(over.id.toString());
-    const isOverATask = tasks.some(t => t.id === over.id);
+    const isOverALead = leads.some(l => l.id === over.id);
 
-    // If the active item is a task and the over item is not a task, 
-    // or if the active item is a task and the over item is a task in another column, 
+    // If the active item is a lead and the over item is not a lead, 
+    // or if the active item is a lead and the over item is a lead in another column, 
     // DND-Kit will handle the visual transition into the new container. 
 };
 
     const handleDragEnd = (event: DragEndEvent) => {
-        setActiveTask(null);
+        setActiveLead(null);
         const { active, over } = event;
 
         if (!over) return;
@@ -254,22 +274,22 @@ const handleDragOver = (event: DragOverEvent) => {
         const overId = over.id;
 
         if (activeId !== overId) {
-            const activeContainer = activeTask?.columnname;
+            const activeContainer = activeLead?.column_name; // its correct the naming is the error and I'm just too lazy to find and update all use cases
             const overContainer = findContainer(overId);
 
             if (!activeContainer || !overContainer) return;
 
-            const activeIndex = tasks.findIndex(t => t.id === activeId);
-            const overIndex = tasks.findIndex(t => t.id === overId);
+            const activeIndex = leads.findIndex(l => l.id === activeId);
+            const overIndex = leads.findIndex(l => l.id === overId);
 
             if (activeContainer === overContainer) {
                 // Reordering within the same column
                 if (activeIndex !== overIndex) {
-                    setTasks(items => arrayMove(items, activeIndex, overIndex > -1 ? overIndex : items.length -1));
+                    setLeads(items => arrayMove(items, activeIndex, overIndex > -1 ? overIndex : items.length -1));
                 }
             } else {
                 // Moving to a different column
-                moveTask(active.id as number, overContainer as 'To Do' | 'In Progress' | 'Done');
+                moveLead(active.id as number, overContainer as 'In Progress' | 'Closed Won' | 'Closed Lost');
             }
         }
     };
@@ -307,22 +327,22 @@ const handleDragOver = (event: DragOverEvent) => {
             <Content
             {...columnProps}
             className={styles.content1}
-            columnName = "To Do"
-            onMoveTask={moveTask}
+            columnName = "In Progress"
+            onMoveTask={moveLead}
             barClicked={barClicked}
             />
             <Content
             {...columnProps}
             className={styles.content2} 
-            columnName = "In Progress"
-            onMoveTask={moveTask}
+            columnName = "Closed Won"
+            onMoveTask={moveLead}
             barClicked={barClicked}
             />
             <Content
             {...columnProps}
             className={styles.content3}
-            columnName = "Done"
-            onMoveTask={moveTask}
+            columnName = "Closed Lost"
+            onMoveTask={moveLead}
             barClicked={barClicked}
             />
 
@@ -330,7 +350,7 @@ const handleDragOver = (event: DragOverEvent) => {
 
         </div>
         <DragOverlay>
-            {activeTask ? <DisplayCard id={activeTask.id} task={activeTask.task} description={activeTask.description} due_date={activeTask.due_date} priority={activeTask.priority} onEdit={() => {}} onDelete={() => {}} /> : null}
+            {activeLead ? <DisplayCard id={String(activeLead.id)} lead={activeLead} onEdit={() => {}} onDelete={() => {}} /> : null}
         </DragOverlay>
     </DndContext>
   );

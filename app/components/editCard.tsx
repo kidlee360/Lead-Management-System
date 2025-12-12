@@ -5,6 +5,8 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
+
+import styles from './editCard.module.css';
 import clsx from 'clsx';
 
 
@@ -30,37 +32,32 @@ function EditCard(props: any) {
         };
     }, [cardRef]);
 
+    // (Removed stray object literal)
     const [eCard, setCard] = useState({
         id: props.id,
         client_name: props.client_name,
         deal_description: props.deal_description,
-        owner_name: props.owner_name,
         deal_value: props.deal_value,
         last_activity_at: props.last_activity_at,
         lead_source: props.lead_source,
-        time_in_stage: props.time_in_stage,
         columnName: props.columnName
     });
 
 
-    // 💡 CRITICAL FIX: Sync local state when props change
-    // This runs when the task ID changes (e.g., if you switch to edit a different task)
-    // and ensures the form is always initialized with the correct, fresh data.
+    // This effect syncs the local state with props, but ONLY when the card ID changes.
+    // This prevents the form from resetting while the user is typing, which was happening
+    // because the parent component re-renders every second to update the 'time_in_stage' value.
     useEffect(() => {
         setCard({
             id: props.id,
             client_name: props.client_name,
             deal_description: props.deal_description,
-            owner_name: props.owner_name,
             deal_value: props.deal_value,
             last_activity_at: props.last_activity_at,
             lead_source: props.lead_source,
-            time_in_stage: props.time_in_stage,
             columnName: props.columnName
         });
-    }, [props.id, props.client_name, props.deal_description, props.deal_value, props.owner_name, props.last_activity_at, props.lead_source, props.time_in_stage, props.columnName]); 
-    // Added all data props to the dependency array to ensure the form updates if the 
-    // parent component happens to send new data without changing the ID (less common, but safe).
+    }, [props.id]); // Only re-run this effect if the ID of the card changes.
 
     function submitForm() {
         props.onSave(eCard);
@@ -81,64 +78,59 @@ function EditCard(props: any) {
         });
     }
 
+    // (Removed duplicate/incorrect JSX and export)
     return (
-            <div ref={cardRef} className='{styles.cardParent}' style={{height: "300px" }}>
-                <div className='{styles.card}'>
-                    <h3>{eCard.owner_name}</h3>
-                    <input className='{styles.input}'
-                      type="text"
-                      name="client_name"
-                      value={eCard.client_name}
-                      onChange={handleChange}
-                        placeholder="Client Name"
-                        style={{background: "transparent"}}
-                    />
-
-                   <input className='{styles.input}'
-                      type="number"
-                      name="deal_value"
-                      value={eCard.deal_value}
-                      onChange={handleChange}
-                      placeholder="How much is the deal worth"
-                      style={{background: "transparent"}}
-                   />
-
-                   <input className='{styles.input}'
+        <div ref={cardRef} className={styles.cardParent} style={{ height: "300px" }}>
+            <div className={styles.card}>
+                <input className={styles.input}
                     type="text"
-                     name="deal_description"
-                       value={eCard.deal_description}
-                       onChange={handleChange}
-                     placeholder="Add a description"
-                     style={{ background: "transparent"}}
-                     />
-                     <div className='{styles.bottomSection}' >
+                    name="client_name"
+                    value={eCard.client_name}
+                    onChange={handleChange}
+                    placeholder="Client Name"
+                    style={{ background: "transparent" }}
+                />
 
-                    <input className='{clsx(styles.input, styles.date)} ' 
+                <input className={styles.input}
+                    type="number"
+                    name="deal_value"
+                    value={eCard.deal_value}
+                    onChange={handleChange}
+                    placeholder="How much is the deal worth"
+                    style={{ background: "transparent" }}
+                />
+
+                <input className={styles.input}
+                    type="text"
+                    name="deal_description"
+                    value={eCard.deal_description}
+                    onChange={handleChange}
+                    placeholder="Add a description"
+                    style={{ background: "transparent" }}
+                />
+                <div className={styles.bottomSection}>
+                    <input className={clsx(styles.input, styles.date)}
                         type="date"
-                        name="last_activity_at"  
+                        name="last_activity_at"
                         onChange={handleChange}
                         value={eCard.last_activity_at}
-                        placeholder="when was the last contact" 
+                        placeholder="when was the last contact"
                     />
-                    <input className='{styles.input}' 
+                    <input className={styles.input}
                         type="text"
-                        name="lead_source"  
+                        name="lead_source"
                         onChange={handleChange}
                         value={eCard.lead_source}
-                        placeholder="source of the lead" 
+                        placeholder="source of the lead"
                     />
-                    <h3>{eCard.time_in_stage}</h3>
-                    </div>
-
-
-
-                    <div className='{`${styles.icons}`}'>
-                          <button className='{clsx(styles.add)}' onClick={submitForm}>
-                              <AddIcon style={{ color: 'white' }} />
-                          </button>
-                    </div>    
+                </div>
+                <div className={styles.icons}>
+                    <button className={clsx(styles.add)} onClick={submitForm}>
+                        <AddIcon style={{ color: 'blue' }} />
+                    </button>
                 </div>
             </div>
+        </div>
     );
 };
 

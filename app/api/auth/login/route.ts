@@ -49,7 +49,7 @@ export async function POST(req: Request) {
                 role: user.role ?? null,
             },
         }, { status: 200 });
-        res.headers.set('Set-Cookie', `user_id=${user.id}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax`);
+        res.headers.set('Set-Cookie', `user_id=${user.id}; user_name=${user.user_name}; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax`);
         return res;
     } catch (error) {
         console.error('Login error:', error);

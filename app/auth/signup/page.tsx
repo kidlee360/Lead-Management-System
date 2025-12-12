@@ -5,7 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation'; // For redirecting after success
-import useAuth from '../../../hooks/useAuth';
+import useAuth from '@/hooks/useAuth';
 import { jwtDecode } from 'jwt-decode';
 
 

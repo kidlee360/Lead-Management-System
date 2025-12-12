@@ -1,18 +1,30 @@
 "use client"; // This component needs client-side features like useState and useEffect
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
-import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
- import EditIcon from '@mui/icons-material/Edit';
- import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import clsx from 'clsx';
 
- import clsx from 'clsx';
+type Props = {
+    id: string;
+    client_name?: string;
+    deal_description?: string;
+    deal_value?: number | string;
+    last_activity_at?: string | null;
+    lead_source?: string;
+    time_in_stage?: string;
+    stageTime?:(formattedDuration: string)=> void;
+    onEdit?: (props: any) => void;
+    onDelete?: (id: string) => void;
+    [key: string]: any;
+};
 
-
-function DisplayCard(props: any) {
+function DisplayCard(props: Props) {
     const { id, client_name, deal_description, deal_value, owner_name, last_activity_at, lead_source, time_in_stage, onEdit, onDelete } = props;
-    
+
+
     const {
         attributes,
         listeners,
@@ -20,44 +32,40 @@ function DisplayCard(props: any) {
         transform,
         transition,
         isDragging,
-    } = useSortable({ 
-        id: id,
+    } = useSortable({
+        id,
         data: {
-            type: 'Task',
-            task: props,
-        }
+            type: 'Lead',
+            lead: props,
+        },
     });
- 
-    const style = {
-        transform: CSS.Transform.toString(transform),
+
+    const style: React.CSSProperties = {
+        transform: transform ? CSS.Transform.toString(transform) : undefined,
         transition,
         opacity: isDragging ? 0.5 : 1,
-        zIndex: isDragging ? 100 : 0,
-        height: "300px"
+        zIndex: isDragging ? 100 : undefined,
+        height: "300px",
     };
-
-
 
     useEffect(() => {
         if (isDragging) {
-            sessionStorage.setItem("draggedTaskId", id);
-            console.log(sessionStorage.setItem("draggedTaskId", id));
+            // store the currently dragged lead id
+            sessionStorage.setItem("draggedLeadId", id);
         }
     }, [isDragging, id]);
 
-    function editForm() {
-        onEdit(props);
-    }
-    
-    function deleteForm() {
-        onDelete(id);
-    }
+    const editForm = () => {
+        
+        if (onEdit) onEdit(props);
+    };
 
+    const deleteForm = () => {
+        if (onDelete) onDelete(id);
+    };
 
-
-    
     return (
-        <div 
+        <div
             // 1. Assign the ref for DND Kit to track the DOM node
             ref={setNodeRef}
             // 2. Apply the dynamic style object calculated above
@@ -66,30 +74,32 @@ function DisplayCard(props: any) {
             // Listeners handle mouse/touch events, attributes handle accessibility
             {...attributes}
             {...listeners}
-             className='{styles.cardParent}'
+            className="cardParent"
         >
-            <div className='{styles.card}'>
-                <h3>{owner_name}</h3>
-                <p>{client_name}</p>
+            <div className="card">
+                <h3>{client_name}</h3>
                 <p>Deal Value: ${deal_value}</p>
                 <p>{deal_description}</p>
                 <p>Lead Source: {lead_source}</p>
-                <div className='{styles.bottomSection}'>
-                    <p>Last Contacted At: {last_activity_at && new Date(last_activity_at).toDateString() || 'N/A'}</p>
+                <div className="bottomSection">
+                    <p>Last Contacted At: {last_activity_at ? new Date(last_activity_at).toDateString() : 'N/A'}</p>
                     <p>Time in Stage: {time_in_stage}</p>
                 </div>
-                <div className='{styles.icons}'>
-                    <button className='{clsx(styles.edit,)}' onClick={editForm}>
-                        <EditIcon style={{ color: 'white' }} />
+                <div className="icons">
+                    <button className={clsx('edit')} onClick={editForm}>
+                        <EditIcon style={{ color: 'blue' }} />
                     </button>
-                    <button className='{clsx(styles.delete,)}' onClick={deleteForm}>
-                        <DeleteIcon style={{ color: 'white' }} />
+                    <button className={clsx('delete')} onClick={deleteForm}>
+                        <DeleteIcon style={{ color: 'blue' }} />
                     </button>
                 </div>
             </div>
         </div>
     );
-
 }
 
 export default DisplayCard;
+
+function stageTime(formattedDuration: string) {
+    throw new Error('Function not implemented.');
+}
