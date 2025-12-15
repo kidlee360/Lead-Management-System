@@ -10,6 +10,7 @@ import LeadsPieChart from "../../adminComponents/pieChart";
 export default function AdminPage() {
   const { isAuthenticated, isLoading, role } = useAuth();
   const router = useRouter();
+  const {logout} = useAuth();
 
   useEffect(() => {
     if (!isLoading) {
@@ -26,6 +27,12 @@ export default function AdminPage() {
     }
   }, [isAuthenticated, isLoading, role, router]);
 
+  const logOut = () => {
+        // Call the logout function from the hook and redirect to signup/login
+        logout();
+        router.push('/auth/login');
+  }
+
   if (isLoading) {
     return <div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>;
   }
@@ -35,7 +42,10 @@ export default function AdminPage() {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div>
+      <div className='h-[50px] w-screen bg-[#1B3C53] flex items-center justify-end pr-[20px]'>
+            <p onClick={logOut} className='text-white underline font-bold cursor-pointer hover:text-blue-500'>Logout</p>
+        </div>
       <h1>Admin Dashboard</h1>
       <LeadsPieChart />
       <LeadsBarChart />

@@ -323,7 +323,7 @@ const handleDragOver = (event: DragOverEvent) => {
         collisionDetection={closestCorners}
     >
         <div className='h-[50px] w-screen bg-[#1B3C53] flex items-center justify-end pr-[20px]'>
-            <p onClick={logOut} className='text-white underline font-bold cursor-pointer'>Logout</p>
+            <p onClick={logOut} className='text-white underline font-bold cursor-pointer hover:text-blue-500'>Logout</p>
         </div>
         <div className='bg-[#EAE0CF] pt-[40px]'>
         <div className={styles.check}>
