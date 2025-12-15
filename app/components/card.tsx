@@ -81,7 +81,7 @@ function Card(props: any) {
         <div className="flex w-full flex-col gap-[20px] justify-center items-center">
             <div ref={cardRef} className={styles.cardParent} style={{display: isExpanded? '': 'none', height: "300px"}}>
                 <div className={clsx(styles.card, 'bg-white')}>
-                    <input className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792]')}
+                    <input className={clsx('rounded-lg border border-dashed border-[#547792]')}
                       type="text"
                       name="client_name"
                       value={card.client_name}
@@ -90,7 +90,7 @@ function Card(props: any) {
                         style={{background: "transparent"}}
                     />
 
-                   <input className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792]')}
+                   <input className={clsx('rounded-lg border border-dashed border-[#547792]')}
                       type="number"
                       name="deal_value"
                       value={card.deal_value}
@@ -100,21 +100,21 @@ function Card(props: any) {
                       style={{background: "transparent"}}
                    />
 
-                   <textarea className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792] h-[80px]')}
+                   <textarea className={clsx('rounded-lg border border-dashed border-[#547792] h-[80px]')}
                      name="deal_description"
                        value={card.deal_description}
                        onChange={handleChange}
                      placeholder="Add a description"
                      />
 
-                    <input className={clsx(styles.input, styles.date, 'rounded-lg border border-dashed border-[#547792]')}  
+                    <input className={clsx('rounded-lg border border-dashed border-[#547792]')}
                         type="date"
                         name="last_activity_at"  
                         onChange={handleChange}
                         value={card.last_activity_at}
                         placeholder="when was the last contact" 
                     />
-                    <input className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792]')} 
+                    <input className={clsx('rounded-lg border border-dashed border-[#547792]')}
                         type="text"
                         name="lead_source"  
                         onChange={handleChange}

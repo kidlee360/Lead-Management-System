@@ -8,7 +8,6 @@ import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import SideBar from './components/sideBar';
 import Content from './components/column';
 import DisplayCard from './components/displayCard';
-import Header from './components/header';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth'; // <-- Import the hook
 

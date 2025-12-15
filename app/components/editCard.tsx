@@ -107,15 +107,15 @@ function EditCard(props: any) {
                     placeholder="Add a description"
                     style={{ background: "transparent" }}
                 />
-                <div className={clsx(styles.bottomSection, 'flex flex-col gap-[10px]')}>
-                    <input className={clsx(styles.input, styles.date, 'rounded-lg border border-dashed border-[#547792]')}
+                <div className={clsx('flex flex-col gap-[10px]')}>
+                    <input className={clsx('rounded-lg border border-dashed border-[#547792]')}
                         type="date"
                         name="last_activity_at"
                         onChange={handleChange}
                         value={eCard.last_activity_at}
                         placeholder="when was the last contact"
                     />
-                    <input className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792]')}
+                    <input className={clsx('rounded-lg border border-dashed border-[#547792]')}
                         type="text"
                         name="lead_source"
                         onChange={handleChange}
@@ -123,8 +123,8 @@ function EditCard(props: any) {
                         placeholder="source of the lead"
                     />
                 </div>
-                <div className={clsx(styles.icons, 'pb-[5px]')}>
-                    <button className={clsx(styles.add, 'flex justify-self-center justify-center items-center rounded-full bg-blue-300 h-[30px] w-[30px] hover:bg-blue-600')} onClick={submitForm}>
+                <div className={clsx('pb-[5px]')}>
+                    <button className={clsx('flex justify-self-center justify-center items-center rounded-full bg-blue-300 h-[30px] w-[30px] hover:bg-blue-600')} onClick={submitForm}>
                         <AddIcon style={{ color: 'white' }} />
                     </button>
                 </div>
