@@ -27,15 +27,15 @@ export default function SideBar(props: any){
 
     return(
     <div className={props.className}>
-    <div className='{styles.container}'>
-        <button className='{styles.myButton}' style={{backgroundColor: active === "high"? "rgba(34, 30, 30, 0.2)": ''}} onClick={highPriority}>
-          <PriorityHighIcon style={{color: "blue"}}/>
+    <div className='flex flex-col items-center gap-[20px] mt-[20px]'>
+        <button className='rounded-full bg-[#EAE0CF] h-[30px] w-[30px] hover:bg-blue-600 shadow-md' style={{backgroundColor: active === "time_in_stage"? "#1B3C53": ''}} onClick={highPriority}>
+          <PriorityHighIcon style={{color: "white"}}/>
         </button>        
-        <button className='{styles.myButton}' style={{backgroundColor: active === "low"? "rgba(34, 30, 30, 0.2)": ''}} onClick={lowPriority}>
-          <LowPriorityIcon style={{color: "blue"}}/>
+        <button className='rounded-full bg-[#EAE0CF] h-[30px] w-[30px] hover:bg-blue-600 shadow-md' style={{backgroundColor: active === "last_activity_at"? "#1B3C53": ''}} onClick={lowPriority}>
+          <LowPriorityIcon style={{color: "white"}}/>
         </button>
-        <button className='{styles.myButton}' style={{backgroundColor: active === "date"? "rgba(34, 30, 30, 0.2)": ''}} onClick={dueDate}>
-          <PendingActionsIcon style={{color: "blue"}} />
+        <button className='rounded-full bg-[#EAE0CF] h-[30px] w-[30px] hover:bg-blue-600 shadow-md' style={{backgroundColor: active === "deal_value"? "#1B3C53": ''}} onClick={dueDate}>
+          <PendingActionsIcon style={{color: "white"}} />
         </button>
     </div>
     </div>

@@ -22,6 +22,7 @@ interface Lead {
         lead_source: string;
         column_entry_time: Date;
         columnName: string;
+        column_name: string;
     }
 
     // Remove React.useMemo and call the hooks directly at the top level of the component
@@ -114,7 +115,7 @@ interface Lead {
   }, [isAuthenticated, isLoading, role, router]); // Empty dependency array means this runs once after initial render
 
   
-  if (loading) return <div style={{ textAlign: 'center', padding: '50px' }}>Loading Analytics Dashboard...</div>;
+  if (loading) return <div style={{ textAlign: 'center', padding: '50px' }}>Loading Lead Management System...</div>;
   if (error) return <div style={{ textAlign: 'center', padding: '50px', color: 'red' }}>Error: {error}</div>;
 
 
@@ -232,7 +233,8 @@ interface Lead {
             return id.toString();
         }
         const lead = leads.find(l => l.id === id);
-        return lead?.columnName;
+        console.log("findContainer for ID:", id, "Lead:", lead, "ColumnName:", lead?.columnName);
+        return lead?.column_name;
     };
 
     sensors
@@ -304,7 +306,9 @@ const handleDragOver = (event: DragOverEvent) => {
 
 
   const logOut = () => {
-    logout;
+        // Call the logout function from the hook and redirect to signup/login
+        logout();
+        router.push('/auth/login');
   }
 
 
@@ -319,10 +323,11 @@ const handleDragOver = (event: DragOverEvent) => {
         onDragEnd={handleDragEnd} 
         collisionDetection={closestCorners}
     >
-        <div className={styles.app}>
+        <div className='h-[50px] w-screen bg-[#1B3C53] flex items-center justify-end pr-[20px]'>
+            <p onClick={logOut} className='text-white underline font-bold cursor-pointer'>Logout</p>
+        </div>
+        <div className='bg-[#EAE0CF] pt-[40px]'>
         <div className={styles.check}>
-            <div className={styles.logo} onClick={logOut}><span>Log Out</span> </div>
-            <Header className={styles.header} />
             <SideBar className={styles.sidebar} sideBarClick={barClick}/>
             <Content
             {...columnProps}

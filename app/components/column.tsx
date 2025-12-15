@@ -7,6 +7,7 @@ import DisplayCard from './displayCard';
 import EditCard from './editCard';//another way of setting path
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { intervalToDuration, formatDuration } from 'date-fns';
+import styles from './card.module.css';
 
 export default function Column(props: any) {
     const {
@@ -89,7 +90,10 @@ export default function Column(props: any) {
         <div className={props.className}
             ref={setNodeRef} // DND Kit Ref for the droppable area
         >
-            <div className={'styles.content'}>
+            <div className={styles.column}>
+                <div className=' w-full bg-[#94B4C1] flex rounded-[10px] flex-col items-center justify-between gap-[20px] pt-[20px] pb-[20px]'>
+                <div className='text-center'><h3 className='font-bold'>{props.columnName}</h3></div>
+                
                 <SortableContext items={leadIds} strategy={verticalListSortingStrategy}>
                     {columnLeads.map((lead: any) => (
                         editingLeadId === lead.id ?
@@ -128,6 +132,7 @@ export default function Column(props: any) {
                     onAdd={addLead}
                     columnName={columnName}
                 />
+                </div>
             </div>
         </div>
     );

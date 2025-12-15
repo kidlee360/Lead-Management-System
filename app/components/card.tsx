@@ -5,11 +5,13 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import clsx from 'clsx';
+import styles from './card.module.css';
 
 
 function Card(props: any) {
     const [isExpanded, setExpanded] = useState(false);
     const cardRef = useRef<HTMLDivElement>(null);
+    const addCardRef = useRef<HTMLDivElement>(null);
 
     function expand() {
         setExpanded(true);
@@ -21,7 +23,10 @@ function Card(props: any) {
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
+            if (
+                cardRef.current && !cardRef.current.contains(event.target as Node) &&
+                addCardRef.current && !addCardRef.current.contains(event.target as Node)
+            ) {
                 collapse();
             }
         }
@@ -32,7 +37,7 @@ function Card(props: any) {
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [cardRef]);
+    }, [cardRef, addCardRef]);
 
     const [card, setCard] = useState({
         client_name: "",
@@ -58,8 +63,8 @@ function Card(props: any) {
         collapse();
     }
 
-
-    function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+ 
+    function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
         const { name, value } = event.target;
 
         setCard((prevCard) => {
@@ -73,9 +78,10 @@ function Card(props: any) {
     }
 
     return (
-            <div ref={cardRef} className='{styles.cardParent}' style={{height: isExpanded? "300px": '' }}>
-                <div className='{styles.card}'>
-                    <input className='{styles.input}'
+        <div className="flex w-full flex-col gap-[20px] justify-center items-center">
+            <div ref={cardRef} className={styles.cardParent} style={{display: isExpanded? '': 'none', height: "300px"}}>
+                <div className={clsx(styles.card, 'bg-white')}>
+                    <input className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792]')}
                       type="text"
                       name="client_name"
                       value={card.client_name}
@@ -84,7 +90,7 @@ function Card(props: any) {
                         style={{background: "transparent"}}
                     />
 
-                   <input className='{styles.input}'
+                   <input className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792]')}
                       type="number"
                       name="deal_value"
                       value={card.deal_value}
@@ -94,24 +100,21 @@ function Card(props: any) {
                       style={{background: "transparent"}}
                    />
 
-                   <input className='{styles.input}'
-                    type="text"
+                   <textarea className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792] h-[80px]')}
                      name="deal_description"
                        value={card.deal_description}
                        onChange={handleChange}
                      placeholder="Add a description"
-                     style={{display: isExpanded? '': "none", background: "transparent"}}
                      />
-                     <div className='{styles.bottomSection}' >
 
-                    <input className='{clsx(styles.input, styles.date)}' style={{display: isExpanded? '': "none" }} 
+                    <input className={clsx(styles.input, styles.date, 'rounded-lg border border-dashed border-[#547792]')}  
                         type="date"
                         name="last_activity_at"  
                         onChange={handleChange}
                         value={card.last_activity_at}
                         placeholder="when was the last contact" 
                     />
-                    <input className='{styles.input}' style={{display: isExpanded? '': "none" }} 
+                    <input className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792]')} 
                         type="text"
                         name="lead_source"  
                         onChange={handleChange}
@@ -119,17 +122,24 @@ function Card(props: any) {
                         placeholder="source of the lead" 
                     />
                     <h3>{card.time_in_stage}</h3>
-                    </div>
 
 
 
-                    <div className='{`${styles.icons}`}'>
-                          <button className='{clsx(styles.add)}' style={{display: isExpanded? '': "none"}} onClick={submitForm}>
-                              <AddIcon style={{ color: 'blue' }} />
-                          </button>
-                    </div>    
+                       
                 </div>
+                
             </div>
+            <div ref={addCardRef} className={styles.addCard}>
+                {isExpanded?
+                  <button className='flex justify-self-start font-bold h-[30px] w-[100px] bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-200 px-4 py-2 text-sm justify-center items-center' onMouseDown={(e) => e.stopPropagation()} onClick={submitForm}>Add Card</button>
+                    :
+                  <h3 className="flex justify-self-start font-bold">Add Card</h3>
+                }
+                  <button onClick={expand} style={{display: isExpanded? 'none': ''}}>
+                      <AddIcon style={{ color: 'blue' }} />
+                  </button>
+            </div> 
+        </div>    
     );
 };
 

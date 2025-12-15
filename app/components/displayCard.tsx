@@ -6,6 +6,7 @@ import { CSS } from '@dnd-kit/utilities';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import clsx from 'clsx';
+import styles from './card.module.css';
 
 type Props = {
     id: string;
@@ -45,7 +46,6 @@ function DisplayCard(props: Props) {
         transition,
         opacity: isDragging ? 0.5 : 1,
         zIndex: isDragging ? 100 : undefined,
-        height: "300px",
     };
 
     useEffect(() => {
@@ -74,23 +74,24 @@ function DisplayCard(props: Props) {
             // Listeners handle mouse/touch events, attributes handle accessibility
             {...attributes}
             {...listeners}
-            className="cardParent"
+            className={clsx( 'flex rounded-lg w-[90%] bg-[#EAE0CF] text-center pb-[10px]')}
         >
-            <div className="card">
-                <h3>{client_name}</h3>
-                <p>Deal Value: ${deal_value}</p>
-                <p>{deal_description}</p>
-                <p>Lead Source: {lead_source}</p>
-                <div className="bottomSection">
-                    <p>Last Contacted At: {last_activity_at ? new Date(last_activity_at).toDateString() : 'N/A'}</p>
-                    <p>Time in Stage: {time_in_stage}</p>
+            <div className={clsx(styles.card, 'flex flex-col gap-[5px]')}>
+                <h3 className='font-bold rounded-lg border border-dashed border-[#547792]'>{client_name}</h3>
+                <p className='rounded-lg border border-dashed border-[#547792]'><span className='font-bold'>Deal Value:</span> <span>${deal_value}</span></p>
+                <div className='flex flex-col rounded-lg border border-dashed border-[#547792]'>
+                    <p className='font-bold block'>Description:</p>
+                    <p>{deal_description}</p>
                 </div>
-                <div className="icons">
-                    <button className={clsx('edit')} onClick={editForm}>
-                        <EditIcon style={{ color: 'blue' }} />
+                <p className='rounded-lg border border-dashed border-[#547792]'> <span className='font-bold'>Lead Source:</span> <span>{lead_source}</span></p>
+                    <p className='rounded-lg border border-dashed border-[#547792]'><span className='font-bold'>Last Contacted At:</span> <span>{last_activity_at ? new Date(last_activity_at).toDateString() : 'N/A'}</span></p>
+                    <p className='rounded-lg border border-dashed border-[#547792]'><span className='font-bold'>Time in Stage:</span> <span>{time_in_stage || 'N/A'}</span></p>
+                <div className="icons flex justify-between px-[10px] pt-[5px]">
+                    <button className='rounded-full bg-blue-300 h-[30px] w-[30px] hover:bg-blue-600' onClick={editForm}>
+                        <EditIcon style={{ color: 'white' }} />
                     </button>
-                    <button className={clsx('delete')} onClick={deleteForm}>
-                        <DeleteIcon style={{ color: 'blue' }} />
+                    <button className='rounded-full bg-blue-300 h-[30px] w-[30px] hover:bg-blue-600' onClick={deleteForm}>
+                        <DeleteIcon style={{ color: 'white' }} />
                     </button>
                 </div>
             </div>

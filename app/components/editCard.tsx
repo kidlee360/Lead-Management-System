@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 
-import styles from './editCard.module.css';
+import styles from './card.module.css';
 import clsx from 'clsx';
 
 
@@ -65,7 +65,7 @@ function EditCard(props: any) {
     }
 
 
-    function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    function handleChange(event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
         const { name, value } = event.target;
 
         setCard((prevCard) => {
@@ -80,9 +80,9 @@ function EditCard(props: any) {
 
     // (Removed duplicate/incorrect JSX and export)
     return (
-        <div ref={cardRef} className={styles.cardParent} style={{ height: "300px" }}>
-            <div className={styles.card}>
-                <input className={styles.input}
+        <div ref={cardRef} className={clsx(styles.cardParent)} style={{ height: "300px" }}>
+            <div className={clsx(styles.card, 'h-[300px]')}>
+                <input className='rounded-lg border border-dashed border-[#547792]'
                     type="text"
                     name="client_name"
                     value={eCard.client_name}
@@ -91,7 +91,7 @@ function EditCard(props: any) {
                     style={{ background: "transparent" }}
                 />
 
-                <input className={styles.input}
+                <input className='rounded-lg border border-dashed border-[#547792]'
                     type="number"
                     name="deal_value"
                     value={eCard.deal_value}
@@ -100,23 +100,22 @@ function EditCard(props: any) {
                     style={{ background: "transparent" }}
                 />
 
-                <input className={styles.input}
-                    type="text"
+                <textarea className='w-inherit h-auto rounded-lg border border-dashed border-[#547792]'
                     name="deal_description"
                     value={eCard.deal_description}
                     onChange={handleChange}
                     placeholder="Add a description"
                     style={{ background: "transparent" }}
                 />
-                <div className={styles.bottomSection}>
-                    <input className={clsx(styles.input, styles.date)}
+                <div className={clsx(styles.bottomSection, 'flex flex-col gap-[10px]')}>
+                    <input className={clsx(styles.input, styles.date, 'rounded-lg border border-dashed border-[#547792]')}
                         type="date"
                         name="last_activity_at"
                         onChange={handleChange}
                         value={eCard.last_activity_at}
                         placeholder="when was the last contact"
                     />
-                    <input className={styles.input}
+                    <input className={clsx(styles.input, 'rounded-lg border border-dashed border-[#547792]')}
                         type="text"
                         name="lead_source"
                         onChange={handleChange}
@@ -124,9 +123,9 @@ function EditCard(props: any) {
                         placeholder="source of the lead"
                     />
                 </div>
-                <div className={styles.icons}>
-                    <button className={clsx(styles.add)} onClick={submitForm}>
-                        <AddIcon style={{ color: 'blue' }} />
+                <div className={clsx(styles.icons, 'pb-[5px]')}>
+                    <button className={clsx(styles.add, 'flex justify-self-center justify-center items-center rounded-full bg-blue-300 h-[30px] w-[30px] hover:bg-blue-600')} onClick={submitForm}>
+                        <AddIcon style={{ color: 'white' }} />
                     </button>
                 </div>
             </div>

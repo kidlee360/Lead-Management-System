@@ -1,0 +1,45 @@
+/* Add your styles here */
+.column{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    align-self: start;
+    justify-content: space-between;
+    gap: 10px;
+    align-items: center;
+    max-height: 100%;
+    width: inherit;
+    background-color: #EAE0CF;
+    overflow: scroll;
+    &::-webkit-scrollbar{
+        display: none;
+    }
+}
+
+.cardParent {
+    background-color: #EAE0CF;
+    display: flex;
+    border-radius: 10px;
+    width: 90%;
+    height: 350px;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    width: 100%;
+    justify-content: space-between;
+
+}
+.input {}
+.bottomSection {}
+.icons {}
+.add {}
+.date {}
+
+.addCard{
+    place-items: center;
+    width: 90%;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+}
