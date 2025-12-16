@@ -10,6 +10,7 @@ import Content from './components/column';
 import DisplayCard from './components/displayCard';
 import { useRouter } from 'next/navigation';
 import useAuth from '@/hooks/useAuth'; // <-- Import the hook
+import 'dotenv/config';
 
 export default function App() {
 interface Lead {
@@ -23,6 +24,8 @@ interface Lead {
         columnName: string;
         column_name: string;
     }
+
+    const adminEmail = process.env.DEFAULT_ADMIN_EMAIL;
 
     // Remove React.useMemo and call the hooks directly at the top level of the component
     const pointerSensor = useSensor(PointerSensor, {
@@ -48,7 +51,7 @@ interface Lead {
     const [barClicked, setBarClicked] = useState("");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const { isAuthenticated, isLoading, logout, role } = useAuth();
+    const { isAuthenticated, isLoading, logout, role, email } = useAuth();
     const router = useRouter();
 
     //--GET ROUTE--//
@@ -83,6 +86,11 @@ interface Lead {
             router.push('/api/users/admin/dashboard');
             return;
         }
+    if (isLoading && email ===  adminEmail) { 
+        // User is an admin, redirect to admin dashboard
+            router.push('/api/users/admin/dashboard');
+            return;
+    }  
     // IMPORTANT: In a production app, the token should be managed securely
     // (e.g., stored in HTTP-only cookies, or local storage with careful consideration).
     // For local development, paste a valid token you get from /api/auth/login.

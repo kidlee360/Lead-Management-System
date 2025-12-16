@@ -20,6 +20,7 @@ export default function useAuth() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [role, setRole] = useState<string | null>(null);
+    const [email, setEmail] = useState<string | null>(null);
     
     useEffect(() => {
     setIsLoading(true);
@@ -56,6 +57,7 @@ export default function useAuth() {
                   const decoded = jwtDecode<DecodedToken>(authData.token);
                   setIsAuthenticated(true);
                   setRole(decoded.role ?? null);
+                  setEmail(decoded.email ?? null);
                 } catch (decodeErr) {
                   console.error('Failed to decode JWT:', decodeErr);
                   localStorage.removeItem('authData');
@@ -81,5 +83,5 @@ export default function useAuth() {
         setRole(null);
     };
 
-    return { isAuthenticated, isLoading, logout, role };
+    return { isAuthenticated, isLoading, logout, role, email };
 };
