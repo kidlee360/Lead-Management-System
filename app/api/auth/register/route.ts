@@ -10,6 +10,7 @@ if (!JWT_SECRET) {
 
 export async function POST(req: Request) {
   try {
+    console.log('Registration request received');
     const body = await req.json();
     // Support both `username` and `firstName` from the client
     const username = body.username ?? body.firstName;

@@ -15,8 +15,7 @@ export async function GET(req: Request) {
 
     if (reportName === 'pieChart') {
       const result = await pool.query(
-        'SELECT column_name as name, COUNT(*)::int as value FROM leads WHERE user_id = $1 GROUP BY column_name',
-        [userId]
+        'SELECT column_name as name, COUNT(*)::int as value FROM leads GROUP BY column_name'
       );
 
       const data = result.rows.map((row) => ({
@@ -27,15 +26,13 @@ export async function GET(req: Request) {
       return NextResponse.json(data, { status: 200 });
     } else if (reportName === 'barChart') {
       const result = await pool.query(
-        'SELECT lead_source as name, SUM(COALESCE(deal_value,0))::numeric as value FROM leads WHERE user_id = $1 GROUP BY lead_source',
-        [userId]
+        'SELECT lead_source as name, SUM(COALESCE(deal_value,0))::numeric as value FROM leads GROUP BY lead_source'
       );
       const data = result.rows.map((row) => ({ name: row.name, value: Number(row.value) }));
       return NextResponse.json(data, { status: 200 });
     } else if (reportName === 'lineChart') {
       const result = await pool.query(
-        "SELECT DATE_TRUNC('month', column_entry_time) as month, COUNT(id)::int as value FROM leads WHERE user_id = $1 GROUP BY month ORDER BY month ASC",
-        [userId]
+        "SELECT DATE_TRUNC('month', column_entry_time) as month, COUNT(id)::int as value FROM leads GROUP BY month ORDER BY month ASC",
       );
       const data = result.rows.map((row) => ({
         name: new Date(row.month).toISOString().slice(0, 10),

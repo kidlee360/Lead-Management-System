@@ -2,7 +2,7 @@
 -- TRUNCATE public.leads, public.users RESTART IDENTITY CASCADE;
 
 -- 2. Insert Sample Users
-INSERT INTO public.users (user_name, email, password, role)
+INSERT INTO users (user_name, email, password, role)
 VALUES 
 ('Alice Sales', 'alice@company.com', 'hashed_pass_1', 'Manager'),
 ('Bob Closer', 'bob@company.com', 'hashed_pass_2', 'Agent'),
@@ -10,7 +10,7 @@ VALUES
 ('Diana Lead', 'diana@company.com', 'hashed_pass_4', 'admin');
 
 -- 3. Insert Randomized Leads linked to the users above
-INSERT INTO public.leads (
+INSERT INTO leads (
     client_name, 
     deal_description, 
     deal_value, 

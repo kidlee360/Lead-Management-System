@@ -2,9 +2,9 @@
 
 -- DROP TABLE IF EXISTS public.leads;
 
-CREATE TABLE IF NOT EXISTS public.leads
+CREATE TABLE IF NOT EXISTS leads
 (
-    id integer NOT NULL DEFAULT nextval('leads_id_seq'::regclass),
+    id SERIAL PRIMARY KEY NOT NULL UNIQUE,
     client_name character varying COLLATE pg_catalog."default",
     deal_description character varying COLLATE pg_catalog."default",
     deal_value numeric(10,2),
@@ -13,16 +13,15 @@ CREATE TABLE IF NOT EXISTS public.leads
     last_activity_at timestamp without time zone,
     lead_source character varying COLLATE pg_catalog."default",
     user_id integer,
-    CONSTRAINT leads_pkey PRIMARY KEY (id),
     CONSTRAINT leads_user_id_fkey FOREIGN KEY (user_id)
-        REFERENCES public.users (id) MATCH SIMPLE
+        REFERENCES users (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.leads
+ALTER TABLE IF EXISTS leads
     OWNER to postgres;
 
 
@@ -32,17 +31,16 @@ ALTER TABLE IF EXISTS public.leads
 
 -- DROP TABLE IF EXISTS public.users;
 
-CREATE TABLE IF NOT EXISTS public.users
+CREATE TABLE IF NOT EXISTS users
 (
-    id integer NOT NULL DEFAULT nextval('users_id_seq'::regclass),
+    id SERIAL PRIMARY KEY NOT NULL UNIQUE,
     user_name character varying COLLATE pg_catalog."default",
     email character varying COLLATE pg_catalog."default",
     password character varying COLLATE pg_catalog."default",
     role character varying COLLATE pg_catalog."default",
-    CONSTRAINT users_pkey PRIMARY KEY (id)
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public.users
+ALTER TABLE IF EXISTS users
     OWNER to postgres;
